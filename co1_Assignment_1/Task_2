@@ -1,0 +1,45 @@
+>>> type(10)
+<class 'int'>
+>>> type(10.0)
+<class 'float'>
+>>> type("10")
+<class 'str'>
+>>> type(True)
+<class 'bool'>
+>>> type([10, 8.5])
+<class 'list'>
+
+>>> 7 / 2
+3.5
+>>> 7 // 2
+3
+>>> 7 % 2
+1
+>>> -7 // 2
+-4
+
+>>> 0.1 + 0.2 == 0.3
+False
+
+def total_decimal(items):
+    total = Decimal("0.00")
+    for amount in items:
+        total += Decimal(amount)
+    return total
+
+
+total = 0.0
+for amount in payments:
+    total = round(total + float(amount), 2)
+print(total)
+
+Output: 33400.3
+
+
+>>> import sys
+>>> sys.getsizeof(0)
+28
+>>> sys.getsizeof(0.0)
+24
+>>> sys.getsizeof(Decimal("33.40"))
+120

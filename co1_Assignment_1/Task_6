@@ -1,0 +1,33 @@
+def rate_per_litre(fat_steps, snf_steps):
+    """Calculate the rate per litre."""
+    return BASE_RATE + fat_steps * FAT_RATE + snf_steps * SNF_RATE
+
+def payout(rate, litres):
+    """Calculate the total payment."""
+    return round(rate * litres, 2)
+
+def ten_day_total(payments):
+    """Calculate the total payment for ten days."""
+    return round(sum(payments), 2)
+
+
+# Sample values for three milk entries
+rate1 = rate_per_litre(0, 0)
+payment1 = payout(rate1, 10)
+
+rate2 = rate_per_litre(7, 2)
+payment2 = payout(rate2, 8.5)
+
+rate3 = rate_per_litre(-4, -2)
+payment3 = payout(rate3, 12)
+
+# Store the payments in a list
+payments = [payment1, payment2, payment3]
+
+# Calculate the total payment
+total = ten_day_total(payments)
+
+print(f"Entry 1 Payment: Rs. {payment1:.2f}")
+print(f"Entry 2 Payment: Rs. {payment2:.2f}")
+print(f"Entry 3 Payment: Rs. {payment3:.2f}")
+print(f"Total Payment: Rs. {total:.2f}")

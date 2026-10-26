@@ -1,0 +1,24 @@
+BASE_RATE = 30.0
+FAT_RATE = 0.40
+SNF_RATE = 0.30
+MIN_FAT = 2.0
+MAX_FAT = 7.0
+DAYS = 10
+
+>>> value = 10
+>>> type(value)
+<class 'int'>
+>>> value = "Milk"
+>>> type(value)
+<class 'str'>
+
+>>> a, b = 10, 20
+>>> a, b = b, a
+>>> print(a, b)
+20 10
+
+RATE_CARD = {"base": 30.0, "fat": 0.40, "snf": 0.30}
+
+rate = RATE_CARD["base"] +  RATE_CARD["fat"] + RATE_CARD["snf"]
+
+print(rate)

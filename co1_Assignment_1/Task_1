@@ -1,0 +1,13 @@
+MIN_FAT = 2.0
+MAX_FAT = 7.0 
+DAYS = 10
+MIN_LITRES = 0
+
+
+litres1, fat1, snf1 = 5.5, 4.5, 8.2
+litres2, fat2, snf2 = 6.0, 4.2, 8.0
+
+entries = [ ("F001", 5.5, 4.5, 8.2, "Morning"),("F002", 6.0, 4.2, 8.0, "Evening")]
+
+for entry in entries:
+print(entry)

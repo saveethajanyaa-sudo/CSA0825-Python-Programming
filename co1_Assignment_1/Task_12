@@ -1,0 +1,53 @@
+from decimal import Decimal as D, ROUND_FLOOR, ROUND_HALF_UP
+
+REF_FAT = D("3.50")
+REF_SNF = D("8.50")
+FAT_STEP = D("0.10")
+SNF_STEP = D("0.10")
+
+FAT_RATE = D("0.45")
+SNF_RATE = D("0.30")
+BONUS_RATE = D("0.50")
+BONUS_MIN = D("500")
+
+RATE_CARD = {
+    "APR-JUN": D("32.00"),
+    "OTHER": D("30.00")
+}
+
+def base_rate(season):
+    if season not in RATE_CARD:
+        raise ValueError("Invalid season")
+    return RATE_CARD[season]
+
+def steps(value, reference):
+    return int(
+        ((D(str(value)) - reference) / D("0.10"))
+        .to_integral_value(rounding=ROUND_FLOOR)
+    )
+
+def rate_per_litre(season, fat, snf):
+    rate = base_rate(season)
+    fat_adjustment = steps(fat, REF_FAT) * FAT_RATE
+    snf_adjustment = steps(snf, REF_SNF) * SNF_RATE
+    return rate + fat_adjustment + snf_adjustment
+
+def payment(litres, fat, snf, season):
+    amount = D(str(litres)) * rate_per_litre(
+        season, fat, snf
+    )
+    return amount.quantize(
+        D("0.01"), rounding=ROUND_HALF_UP
+    )
+
+def bonus(total_litres):
+    litres = D(str(total_litres))
+    if litres > BONUS_MIN:
+        return (litres * BONUS_RATE).quantize(D("0.01"))
+    return D("0.00")
+
+# Test cases
+print("April-June:", payment(10, "3.75", "8.70", "APR-JUN"))
+print("Other season:", payment(10, "3.75", "8.70", "OTHER"))
+print("Bonus for 501 litres:", bonus(501))
+print("Bonus for 500 litres:", bonus(500))

@@ -1,0 +1,82 @@
+import re
+import time
+ 
+def normalise_phone(number):
+    digits = re.sub(r"\D", "", number)
+    if digits.startswith("91") and len(digits) == 12:
+        digits = digits[2:]
+    return digits
+ 
+def normalise_name(name):
+    return " ".join(name.lower().split())
+ 
+def merge_contacts(contact_lists):
+    merged = {}
+    phone_to_key = {}
+ 
+    for contact in contact_lists:
+        numbers = {
+            normalise_phone(n) for n in contact.get("phones", []) if n
+        }
+        emails = {
+            e.strip().lower() for e in contact.get("emails", []) if e.strip()
+        }
+ 
+        # Find an existing group through ANY phone number in this record.
+        existing = sorted({phone_to_key[n] for n in numbers if n in phone_to_key})
+        if existing:
+            key = existing[0]
+            # Combine groups if this record connects two earlier groups.
+            for old_key in existing[1:]:
+                merged[key]["phones"].update(merged[old_key]["phones"])
+                merged[key]["emails"].update(merged[old_key]["emails"])
+                for old_phone in merged[old_key]["phones"]:
+                    phone_to_key[old_phone] = key
+                del merged[old_key]
+        else:
+            key = next(iter(sorted(numbers)), "name:" + normalise_name(contact.get("name", "")))
+            if key not in merged:
+                merged[key] = {
+                    "name": contact.get("name", "").strip(),
+                    "phones": set(),
+                    "emails": set()
+                }
+ 
+        merged[key]["phones"].update(numbers)
+        merged[key]["emails"].update(emails)
+        if not merged[key]["name"] and contact.get("name"):
+            merged[key]["name"] = contact["name"].strip()
+        for number in numbers:
+            phone_to_key[number] = key
+ 
+    return merged
+ 
+contacts = [
+    {"name": "Dr. Ravi", "phones": ["+91 98400 12345"],
+     "emails": ["RAVI@example.com"]},
+    {"name": "ravi kumar", "phones": ["9840012345", "9000011111"],
+     "emails": ["ravi@example.com", "rk@example.com"]},
+    {"name": "Meena", "phones": ["9888877777"], "emails": []},
+    {"name": "Unknown", "phones": [], "emails": ["unknown@example.com"]}
+]
+ 
+merged = merge_contacts(contacts)
+for key, value in merged.items():
+    print(key, "=>", value["name"],
+          sorted(value["phones"]), sorted(value["emails"]))
+ 
+print("same phone normalises:",
+      normalise_phone("+91 98400 12345") == normalise_phone("9840012345"))
+ 
+# Scaling experiment with unique contacts
+for n in (1000, 100000):
+    data = [
+        {"name": f"Person {i}", "phones": [f"90000{i:06d}"],
+         "emails": [f"person{i}@example.com"]}
+        for i in range(n)
+    ]
+    start = time.perf_counter()
+    result = merge_contacts(data)
+    elapsed = time.perf_counter() - start
+    print(n, "contacts merged:", len(result),
+          "time:", round(elapsed, 4), "seconds")

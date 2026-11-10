@@ -1,0 +1,43 @@
+import copy
+import sys
+import time
+ 
+rows, cols = 3, 4
+bad = [[0] * cols] * rows
+bad[0][1] = 7
+good = [[0 for _ in range(cols)] for _ in range(rows)]
+good[0][1] = 7
+ 
+print("bad :", bad)
+print("good:", good)
+print("same row in bad:", bad[0] is bad[1])
+print("same row in good:", good[0] is good[1])
+ 
+stops = {
+    (13.0827, 80.2707): "Chennai Central",
+    (13.0418, 80.2341): "T. Nagar"
+}
+print("Stop:", stops[(13.0418, 80.2341)])
+ 
+try:
+    stops[[13.0418, 80.2341]] = "Invalid key"
+except TypeError as error:
+    print(type(error).__name__ + ":", error)
+ 
+original = [[1, 2], [3, 4]]
+shallow = copy.copy(original)
+deep = copy.deepcopy(original)
+original[0][0] = 99
+print("shallow shares inner list:", shallow[0] is original[0])
+print("deep shares inner list:", deep[0] is original[0])
+print("shallow:", shallow)
+print("deep:", deep)
+ 
+packed = (10, 20)
+x, y = packed
+print("unpacked:", x, y)
+ 
+large_list = list(range(1000000))
+large_tuple = tuple(range(1000000))
+print("list bytes:", sys.getsizeof(large_list))
+print("tuple bytes:", sys.getsizeof(large_tuple))

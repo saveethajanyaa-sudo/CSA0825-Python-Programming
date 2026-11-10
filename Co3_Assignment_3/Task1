@@ -1,0 +1,53 @@
+import random
+import time
+ 
+def weekly_totals(readings):
+    return [sum(readings[i:i+7]) for i in range(0, len(readings), 7)]
+ 
+def moving_naive(values, window=7):
+    if len(values) < window:
+        return []
+    return [sum(values[i:i+window]) / window
+            for i in range(len(values)-window+1)]
+ 
+def moving_running(values, window=7):
+    if len(values) < window:
+        return []
+    result = []
+    current = sum(values[:window])
+    result.append(current / window)
+    for i in range(window, len(values)):
+        current += values[i] - values[i-window]
+        result.append(current / window)
+    return result
+ 
+random.seed(10)
+readings = [random.randint(0, 20) for _ in range(365)]
+ 
+weeks = weekly_totals(readings)
+wettest = max(enumerate(weeks, start=1), key=lambda x: x[1])
+driest = min(enumerate(weeks, start=1), key=lambda x: x[1])
+averages = moving_running(readings)
+dry_days = [day for day, value in enumerate(readings, start=1) if value == 0]
+ 
+print("Number of readings:", len(readings))
+print("Number of weekly totals:", len(weeks))
+print("First 3 weekly totals:", weeks[:3])
+print("Wettest week:", wettest)
+print("Driest week:", driest)
+print("First 3 moving averages:", [round(x, 2) for x in averages[:3]])
+print("Number of dry days:", len(dry_days))
+print("Empty input:", moving_running([]))
+print("Short input:", moving_running([2, 3, 4]))
+ 
+for n in (365, 36500, 365000):
+    data = [random.randint(0, 20) for _ in range(n)]
+    start = time.perf_counter()
+    a = moving_naive(data)
+    naive_time = time.perf_counter() - start
+    start = time.perf_counter()
+    b = moving_running(data)
+    running_time = time.perf_counter() - start
+    print(n, "equal:", a == b,
+          "naive:", round(naive_time, 4),
+          "running:", round(running_time, 4))

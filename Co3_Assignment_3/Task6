@@ -1,0 +1,85 @@
+from collections import defaultdict
+import time
+import random
+ 
+timetable = {
+    "12601": {
+        "name": "Chennai Mail",
+        "stops": [
+            ("Chennai", "06:00", "06:10"),
+            ("Arakkonam", "07:20", "07:22"),
+            ("Katpadi", "08:30", "08:32")
+        ],
+        "days": {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"}
+    },
+    "12602": {
+        "name": "Coimbatore Express",
+        "stops": [
+            ("Chennai", "07:00", "07:15"),
+            ("Salem", "11:00", "11:05"),
+            ("Coimbatore", "13:00", "13:10")
+        ],
+        "days": {"Mon", "Wed", "Fri"}
+    },
+    "12603": {
+        "name": "Bengaluru Intercity",
+        "stops": [
+            ("Chennai", "08:00", "08:05"),
+            ("Katpadi", "10:00", "10:02"),
+            ("Bengaluru", "13:00", "13:10")
+        ],
+        "days": {"Tue", "Thu", "Sat"}
+    },
+    "12604": {
+        "name": "Madurai Express",
+        "stops": [
+            ("Chennai", "20:00", "20:15"),
+            ("Villupuram", "22:00", "22:05"),
+            ("Madurai", "05:00", "05:10")
+        ],
+        "days": {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"}
+    },
+    "12605": {
+        "name": "Tirupati Passenger",
+        "stops": [
+            ("Chennai", "09:00", "09:10"),
+            ("Arakkonam", "10:30", "10:32"),
+            ("Tirupati", "12:00", "12:10")
+        ],
+        "days": {"Mon", "Tue", "Wed", "Thu", "Fri"}
+    }
+}
+ 
+def build_index(data):
+    index = defaultdict(list)
+    for number, info in data.items():
+        for station, arrival, departure in info["stops"]:
+            index[station].append(number)
+    return index
+ 
+def find_trains(data, station, day):
+    matches = []
+    for number, info in data.items():
+        if day in info["days"]:
+            for stop, arrival, departure in info["stops"]:
+                if stop == station:
+                    matches.append((departure, number, info["name"]))
+    return sorted(matches, key=lambda item: item[0])
+ 
+index = build_index(timetable)
+station, day = "Katpadi", "Tue"
+print("Trains at", station, "on", day + ":")
+for departure, number, name in find_trains(timetable, station, day):
+    print(number, name, "departure", departure)
+ 
+print("Third stop departure of 12601:",
+      timetable["12601"]["stops"][2][2])
+print("Unknown station:", index.get("Unknown", []))
+print("Index for Katpadi:", index["Katpadi"])
+ 
+# Demonstrate indexed filtering
+indexed_matches = [
+    number for number in index.get(station, [])
+    if day in timetable[number]["days"]
+]
+print("Indexed matches:", sorted(indexed_matches))

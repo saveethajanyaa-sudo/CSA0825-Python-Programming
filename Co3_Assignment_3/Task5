@@ -1,0 +1,58 @@
+import random
+import time
+import sys
+ 
+def clean_loop(readings):
+    celsius = []
+    fahrenheit = []
+    for value in readings:
+        if -50 <= value <= 50:
+            celsius.append(value)
+            fahrenheit.append(value * 9 / 5 + 32)
+    return celsius, fahrenheit
+ 
+def clean_comprehension(readings):
+    celsius = [v for v in readings if -50 <= v <= 50]
+    fahrenheit = [v * 9 / 5 + 32 for v in celsius]
+    return celsius, fahrenheit
+ 
+def clean_map_filter(readings):
+    valid = list(filter(lambda v: -50 <= v <= 50, readings))
+    fahrenheit = list(map(lambda v: v * 9 / 5 + 32, valid))
+    return valid, fahrenheit
+ 
+readings = [4, 5, 55, -60, 7, 9, 1, 51, -2]
+c1, f1 = clean_loop(readings)
+c2, f2 = clean_comprehension(readings)
+c3, f3 = clean_map_filter(readings)
+ 
+alarm_minutes = [
+    minute for minute, temp in enumerate(readings, start=1)
+    if -50 <= temp <= 50 and not (2 <= temp <= 8)
+]
+fahrenheit_map = {i: c * 9 / 5 + 32
+                  for i, c in enumerate(c1, start=1)}
+valid_set = {v for v in readings if -50 <= v <= 50}
+ 
+print("valid Celsius:", c1)
+print("valid Fahrenheit:", [round(x, 1) for x in f1])
+print("alarm minutes:", alarm_minutes)
+print("all methods equal:", c1 == c2 == c3 and f1 == f2 == f3)
+print("dictionary entries:", len(fahrenheit_map))
+print("unique valid readings:", sorted(valid_set))
+ 
+for n in (10000, 100000, 1000000):
+    data = [random.uniform(-60, 60) for _ in range(n)]
+    times = []
+    results = []
+    for function in (clean_loop, clean_comprehension, clean_map_filter):
+        start = time.perf_counter()
+        result = function(data)
+        times.append(time.perf_counter() - start)
+        results.append(result)
+    print(n, "equal:", results[0] == results[1] == results[2],
+          "times:", [round(t, 4) for t in times])
+ 
+gen = (x for x in readings if -50 <= x <= 50)
+print("generator object bytes:", sys.getsizeof(gen))
+print("list object bytes:", sys.getsizeof(c1))

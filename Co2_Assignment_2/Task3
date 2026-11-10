@@ -1,0 +1,31 @@
+def normalise(text):
+    """'tn 09 ab 1234' -> 'TN09AB1234' (spaces and hyphens removed, upper case)."""
+    return text.strip().replace(" ", "").replace("-", "").upper()
+
+
+def is_valid(reg):
+    """Valid form: 2 letters, 2 digits, 1 or 2 letters, 4 digits (e.g. TN09AB1234)."""
+    if len(reg) not in (9, 10):
+        return False
+    state, district = reg[:2], reg[2:4]
+    series, number = reg[4:-4], reg[-4:]
+    return (state.isalpha() and district.isdigit()
+            and series.isalpha() and 1 <= len(series) <= 2
+            and number.isdigit())
+
+
+def format_plate(reg):
+    """'TN09AB1234' -> 'TN 09 AB 1234' (only for a valid number)."""
+    return " ".join([reg[:2], reg[2:4], reg[4:-4], reg[-4:]])
+
+
+for raw in ["tn 09 ab 1234", "KA-01-M-0007", "TN9AB1234", "TN 22 1234 AB"]:
+    reg = normalise(raw)
+    print(f"{raw:15} -> {reg:11} {'valid' if is_valid(reg) else 'INVALID'}")
+
+print("\n--- Six designed inputs (predicted vs observed) ---")
+cases = [("tn 09 ab 1234", True), ("TN-09-AB-1234", True), ("Tn09Ab1234", True),
+         ("KA-01-M-0007", True), ("TN9AB1234", False), ("TN 09 ABC 1234", False)]
+for raw, expected in cases:
+    reg = normalise(raw)
+    ok = is_valid(reg)

@@ -1,0 +1,32 @@
+from decimal import Decimal, InvalidOperation
+
+def calculate_bill(filename):
+    total = Decimal("0.00")
+    rejected_lines = []
+
+    try:
+        with open(filename, "r") as file:
+            for line_no, line in enumerate(file, start=1):
+                try:
+                    amount = Decimal(line.strip())
+
+                    if amount < 0:
+                        raise ValueError("Negative amount")
+
+                    total += amount
+
+                except (InvalidOperation, ValueError):
+                    rejected_lines.append(line_no)
+
+        print("Total Bill Amount:", total)
+        print("Rejected Lines:", rejected_lines)
+
+    except FileNotFoundError:
+        print("Error: File not found.")
+
+calculate_bill("bills.txt")
+Sample contents of bills.txt:
+1000.25
+500.25
+invalid
+650.00

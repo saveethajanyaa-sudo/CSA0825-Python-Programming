@@ -1,0 +1,82 @@
+1. Single File Program
+Description:
+In this method, all functions and program statements are written in one Python file. It is suitable for small programs because the code is easy to access and execute.
+Python Code:
+def calculate_present(records):
+    return records.count("P")
+
+
+def display_result(records):
+    total = len(records)
+    present = calculate_present(records)
+
+    percentage = (present / total) * 100
+
+    print("Present Days:", present)
+    print("Attendance:", round(percentage, 2), "%")
+
+
+records = ["P", "P", "A", "P", "P"]
+
+display_result(records)
+
+2. Two-File Program
+File 1 – attendance.py
+def calculate_percentage(present, total):
+    return (present / total) * 100
+File 2 – main.py
+from attendance import calculate_percentage
+
+present = 18
+total = 20
+
+result = calculate_percentage(present, total)
+
+print("Attendance Percentage:", round(result, 2), "%")
+
+3. Three-Module Program
+
+File 1 – reader.py
+def get_records():
+    return ["P", "P", "A", "P", "P"]
+File 2 – stats.py
+def calculate(records):
+    present = records.count("P")
+    total = len(records)
+
+    return (present / total) * 100
+File 3 – report.py
+from reader import get_records
+from stats import calculate
+
+records = get_records()
+percentage = calculate(records)
+
+print("Attendance Report")
+print("Records:", records)
+print("Percentage:", round(percentage, 2), "%")
+
+4. Package-Based Program
+
+Folder Structure:
+attendance/
+    __init__.py
+    stats.py
+main.py
+File 1 – attendance/stats.py
+def calculate_percentage(records):
+    present = records.count("P")
+    total = len(records)
+
+    return (present / total) * 100
+File 2 – attendance/init.py
+from .stats import calculate_percentage
+File 3 – main.py
+from attendance import calculate_percentage
+
+records = ["P", "P", "P", "A", "P"]
+
+result = calculate_percentage(records)
+
+print("Attendance:", round(result, 2), "%")
+

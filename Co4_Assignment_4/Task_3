@@ -1,0 +1,25 @@
+def check_attendance(line):
+    try:
+        student_id, name, status = line.strip().split(",")
+
+        if status not in ["P", "A"]:
+            raise ValueError("Invalid attendance status")
+
+        print("Student ID:", student_id)
+        print("Name:", name)
+        print("Status:", status)
+
+    except ValueError as error:
+        print("Invalid Record:", error)
+
+
+records = [
+    "101,Arun,P",
+    "102,Divya,A",
+    "103,Ravi,X",
+    "104,Kiran"
+]
+
+for record in records:
+    check_attendance(record)
+    print("----------------")

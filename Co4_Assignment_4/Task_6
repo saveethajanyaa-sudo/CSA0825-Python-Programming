@@ -1,0 +1,42 @@
+students = []
+registered_ids = set()
+event_participants = {}
+
+
+def register_student(reg_no, name, event):
+    if reg_no in registered_ids:
+        print("Registration already exists for", reg_no)
+        return
+
+    registered_ids.add(reg_no)
+
+    student = {
+        "Register Number": reg_no,
+        "Name": name,
+        "Event": event
+    }
+
+    students.append(student)
+
+    if event not in event_participants:
+        event_participants[event] = []
+
+    event_participants[event].append(name)
+
+    print(name, "registered successfully.")
+
+
+register_student("101", "Arun", "Coding")
+register_student("102", "Divya", "Dance")
+register_student("103", "Ravi", "Coding")
+register_student("101", "Arun", "Dance")
+
+
+print("\nRegistered Students:")
+for student in students:
+    print(student)
+
+
+print("\nEvent-wise Participants:")
+for event, names in event_participants.items():
+    print(event, ":", names)

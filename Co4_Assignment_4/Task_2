@@ -1,0 +1,20 @@
+attendance = {
+    "101": ["P", "P", "A", "P", "P"],
+    "102": ["P", "A", "A", "P", "P"],
+    "103": ["P", "P", "P", "P", "P"]
+}
+
+for student, records in attendance.items():
+    total_days = len(records)
+    present_days = records.count("P")
+
+    percentage = (present_days / total_days) * 100
+
+    print("\nStudent ID:", student)
+    print("Present Days:", present_days)
+    print("Attendance:", round(percentage, 2), "%")
+
+    if percentage < 75:
+        print("Warning: Attendance below 75%")
+    else:
+        print("Attendance is sufficient")

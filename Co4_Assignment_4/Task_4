@@ -1,0 +1,29 @@
+def update_returns(filename):
+    books = [
+        "Python Basics",
+        "Operating Systems",
+        "Computer Networks"
+    ]
+
+    try:
+        with open(filename, "a") as file:
+            for book in books:
+                file.write(book + "\n")
+
+        print("Book records added successfully.")
+
+        with open(filename, "r") as file:
+            print("\nUpdated File Contents:")
+            print(file.read())
+
+    except FileNotFoundError:
+        print("Error: File not found.")
+
+    except PermissionError:
+        print("Error: Permission denied.")
+
+    except OSError as error:
+        print("File error:", error)
+
+
+update_returns("returns.txt")
